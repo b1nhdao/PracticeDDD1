@@ -29,16 +29,9 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
             return product;
         }
 
-        public void ToggleProductActive(Product product)
+        public void ToggleProductActive()
         {
-            if (product.IsActive)
-            {
-                product.IsActive = false;
-            }
-            else
-            {
-                product.IsActive = true;
-            }
+            IsActive = !IsActive;
         }
     }
 }

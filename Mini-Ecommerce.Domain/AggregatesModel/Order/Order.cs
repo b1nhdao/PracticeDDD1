@@ -31,6 +31,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.Order
         {
             if (_orderItems == null || !_orderItems.Any())
             {
+                TotalPrice = new Price();
                 throw new Exception("Order has no items to calculate total price.");
             }
 
@@ -45,6 +46,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.Order
                 }
                 totalAmount += item.Price.Amount * item.Quantity;
             }
+            TotalPrice = new Price(currency, totalAmount);
         }
 
         public void AddOrderItem(Guid productId, Price price, int quantity)
@@ -63,9 +65,11 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.Order
             if (existingProduct is not null)
             {
                 existingProduct.IncreaseQuantity(quantity);
+                return;
             }
 
             _orderItems.Add(new OrderItem(productId, price, quantity));
+            CalculateOrderTotalPrice();
         }
     }
 }
