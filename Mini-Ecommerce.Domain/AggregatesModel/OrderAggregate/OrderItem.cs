@@ -1,13 +1,13 @@
-﻿using Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate;
+﻿using Microsoft.EntityFrameworkCore;
 using Mini_Ecommerce.Domain.AggregatesModel.ValueObjects;
 
-namespace Mini_Ecommerce.Domain.AggregatesModel.Order
+namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
 {
+    [Keyless]
     public class OrderItem : Entity
     {
         public Guid ProductId { get; private set; }
         public string ProductName { get; private set; }
-        public Sku Sku { get; private set; }
         public Price Price{ get; private set; }
         public int Quantity {  get; private set; }
         public Price LineTotal { get; private set; }

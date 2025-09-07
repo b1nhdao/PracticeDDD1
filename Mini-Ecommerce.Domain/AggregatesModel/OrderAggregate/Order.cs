@@ -1,7 +1,8 @@
 ﻿using Mini_Ecommerce.Domain.AggregatesModel.ValueObjects;
+using Mini_Ecommerce.Domain.Events;
 using Mini_Ecommerce.Domain.SeedWork;
 
-namespace Mini_Ecommerce.Domain.AggregatesModel.Order
+namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
 {
     public class Order : Entity, IAggregateRoot
     {
@@ -9,7 +10,6 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.Order
         public Guid CustomerId { get; private set; }
         public DateTime OrderDate { get; private set; }
         public OrderStatus Status { get; private set; }
-        public Address ShippingAddress { get; private set; }
         public Price TotalPrice { get; private set; }
         public IReadOnlyCollection<OrderItem> OrderItems { get; private set; }
 
@@ -17,14 +17,16 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.Order
         {
         }
 
-        public Order(Guid customerId, OrderStatus status, Address shippingAddress) : this()
+        public Order(Guid id, Guid customerId, string customerName, Address shippingAddress) : this()
         {
+            Id = id;
             CustomerId = customerId;
             OrderDate = DateTime.UtcNow;
-            Status = status;
-            ShippingAddress = shippingAddress;
+            Status = OrderStatus.Submitted;
             TotalPrice = new Price();
             OrderItems = _orderItems;
+
+            AddDomainEvent(new OrderPlacedDomainEvent(id, customerId, customerName, TotalPrice.Amount, TotalPrice.Currency, shippingAddress));
         }
 
         public void CalculateOrderTotalPrice()
@@ -46,6 +48,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.Order
                 }
                 totalAmount += item.Price.Amount * item.Quantity;
             }
+
             TotalPrice = new Price(currency, totalAmount);
         }
 
@@ -70,6 +73,16 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.Order
 
             _orderItems.Add(new OrderItem(productId, price, quantity));
             CalculateOrderTotalPrice();
+        }
+
+        public void SetPaidStatus()
+        {
+            if(Status != OrderStatus.Paid)
+            {
+                Status = OrderStatus.Paid;
+
+                AddDomainEvent(new OrderStatusChangedToPaidDomainEvent(Id, OrderItems));
+            }
         }
     }
 }

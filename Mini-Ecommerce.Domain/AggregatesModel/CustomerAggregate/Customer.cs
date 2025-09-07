@@ -21,7 +21,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.CustomerAggregate
 
         public static Customer Add(string name, string email, Address address)
         {
-            var customer = new Customer(new Guid(), name, email, address);
+            var customer = new Customer(Guid.NewGuid(), name, email, address);
             return customer;
         }
 

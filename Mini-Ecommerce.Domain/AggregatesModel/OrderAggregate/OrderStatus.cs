@@ -1,4 +1,4 @@
-﻿namespace Mini_Ecommerce.Domain.AggregatesModel.Order
+﻿namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
 {
     public enum OrderStatus
     {
