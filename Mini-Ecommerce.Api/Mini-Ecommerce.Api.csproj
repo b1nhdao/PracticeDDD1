@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Mini-Ecommerce.Infrastructure\Mini-Ecommerce.Infrastructure.csproj" />
   </ItemGroup>
 

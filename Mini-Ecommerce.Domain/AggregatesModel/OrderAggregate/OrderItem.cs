@@ -3,33 +3,26 @@ using Mini_Ecommerce.Domain.AggregatesModel.ValueObjects;
 
 namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
 {
-    [Keyless]
     public class OrderItem : Entity
     {
+        public Guid OrderId { get; private set; }
         public Guid ProductId { get; private set; }
         public string ProductName { get; private set; }
-        public Price Price{ get; private set; }
+        public decimal Price{ get; private set; }
         public int Quantity {  get; private set; }
-        public Price LineTotal { get; private set; }
+        public decimal LineTotal { get; private set; }
 
         protected OrderItem() { }
 
-        public OrderItem(Guid id, Guid productId, string productName, Price price, int quantity)
+        public OrderItem(Guid id, Guid orderId, Guid productId, string productName, decimal price, int quantity)
         {
             Id = id;
+            OrderId = orderId;
             ProductId = productId;
             ProductName = productName;
             Price = price;
             Quantity = quantity;
-            LineTotal = new Price(price.Currency, price.Amount * quantity);
-        }
-
-        public OrderItem(Guid productId, Price price, int quantity)
-        {
-            ProductId = productId;
-            Price = price;
-            Quantity = quantity;
-            LineTotal = new Price(price.Currency, price.Amount * quantity);
+            LineTotal = price * quantity;
         }
 
         public void IncreaseQuantity(int quantity)
@@ -37,14 +30,14 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
             Quantity += quantity;
         }
 
-        public static OrderItem Add(Guid productId, string productName, Price price, int quantity)
+        public static OrderItem Add(Guid productId, Guid orderId, string productName, decimal price, int quantity)
         {
             if(quantity <= 0)
             {
                 throw new Exception("Invalid quanitty, must be greater than 0 ");
             }
 
-            var orderItem = new OrderItem(Guid.NewGuid(), productId, productName, price, quantity);
+            var orderItem = new OrderItem(Guid.NewGuid(), orderId, productId, productName, price, quantity);
             return orderItem;
         }
     }

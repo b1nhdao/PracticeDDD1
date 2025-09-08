@@ -7,6 +7,6 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
         Product Add(Product product);
         void Update(Product product);
         Task<List<Product>> GetAllAsync();
-        Task<Product> GetByIdAsync(Guid id);
+        Task<Product?> GetByIdAsync(Guid id);
     }
 }

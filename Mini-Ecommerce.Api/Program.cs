@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
+using Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate;
 using Mini_Ecommerce.Infrastructure;
+using Mini_Ecommerce.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseNpgsql("Host=localhost;Username=postgres;Password=123456;Database=practiceDDD;Port=5432;");
 });
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining(typeof(Program));
+});
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 var app = builder.Build();
 

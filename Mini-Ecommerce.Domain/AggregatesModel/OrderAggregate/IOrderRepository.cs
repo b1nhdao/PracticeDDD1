@@ -7,6 +7,6 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
         Order Add(Order order);
         void Update(Order order);
         Task<List<Order>> GetAllAsync();
-        Task<Order> GetByIdAsync(Guid id);
+        Task<Order?> GetByIdAsync(Guid id);
     }
 }

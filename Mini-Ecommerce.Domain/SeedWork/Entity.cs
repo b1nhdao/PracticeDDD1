@@ -28,6 +28,11 @@ public abstract class Entity
         _domainEvents.Remove(eventItem);
     }
 
+    public void ClearDomainEvents()
+    {
+        _domainEvents?.Clear();
+    }
+
     public bool IsTransient()
     {
         return this.Id == default;

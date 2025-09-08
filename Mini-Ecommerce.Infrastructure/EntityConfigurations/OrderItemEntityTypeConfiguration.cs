@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
+using Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate;
 
 namespace Mini_Ecommerce.Infrastructure.EntityConfigurations
 {
@@ -8,59 +9,24 @@ namespace Mini_Ecommerce.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
-            builder.ToTable("OrderItems", "ecommerce");
+            builder.ToTable("order_items");
 
-            // Primary key
+            builder.Ignore(oi => oi.DomainEvents);
+
             builder.HasKey(oi => oi.Id);
-            builder.Property(oi => oi.Id)
-                .ValueGeneratedNever();
 
-            // Foreign key to Order (shadow property)
-            builder.Property<Guid>("OrderId")
-                .IsRequired();
+            builder.HasOne<Order>()
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Properties
-            builder.Property(oi => oi.ProductId)
-                .IsRequired();
+            builder.HasOne<Product>()
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Property(oi => oi.ProductName)
-                .HasMaxLength(200)
-                .IsRequired();
-
-            builder.Property(oi => oi.Quantity)
-                .IsRequired();
-
-            // Configure Price as owned entity
-            builder.OwnsOne(oi => oi.Price, priceBuilder =>
-            {
-                priceBuilder.Property(p => p.Currency)
-                    .HasColumnName("Currency")
-                    .HasMaxLength(3)
-                    .IsRequired();
-
-                priceBuilder.Property(p => p.Amount)
-                    .HasColumnName("UnitPrice")
-                    .HasColumnType("decimal(18,2)")
-                    .IsRequired();
-            });
-
-            // Configure LineTotal as owned entity
-            builder.OwnsOne(oi => oi.LineTotal, lineTotalBuilder =>
-            {
-                lineTotalBuilder.Property(p => p.Currency)
-                    .HasColumnName("LineTotalCurrency")
-                    .HasMaxLength(3)
-                    .IsRequired();
-
-                lineTotalBuilder.Property(p => p.Amount)
-                    .HasColumnName("LineTotalAmount")
-                    .HasColumnType("decimal(18,2)")
-                    .IsRequired();
-            });
-
-            // Index on ProductId
-            builder.HasIndex(oi => oi.ProductId)
-                .HasDatabaseName("IX_OrderItems_ProductId");
+            builder.Property(oi => oi.ProductName).HasColumnName("product_name").HasMaxLength(100);
+            builder.Property(oi => oi.Quantity).HasColumnName("quantity").IsRequired();
         }
     }
 }

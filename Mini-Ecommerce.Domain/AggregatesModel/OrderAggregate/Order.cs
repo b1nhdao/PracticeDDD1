@@ -6,63 +6,44 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
 {
     public class Order : Entity, IAggregateRoot
     {
-        private readonly List<OrderItem> _orderItems = [];
+        private readonly List<OrderItem> _orderItems;
         public Guid CustomerId { get; private set; }
         public DateTime OrderDate { get; private set; }
         public OrderStatus Status { get; private set; }
-        public Price TotalPrice { get; private set; }
-        public IReadOnlyCollection<OrderItem> OrderItems { get; private set; }
+        public decimal TotalPrice { get; private set; }
+        public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
 
         protected Order()
         {
         }
 
-        public Order(Guid id, Guid customerId, string customerName, Address shippingAddress) : this()
+        public Order(Guid id, Guid customerId, string customerName, OrderStatus status, Address address, List<OrderItem> orderItems)
         {
             Id = id;
             CustomerId = customerId;
             OrderDate = DateTime.UtcNow;
-            Status = OrderStatus.Submitted;
-            TotalPrice = new Price();
-            OrderItems = _orderItems;
+            Status = status;
+            _orderItems = new List<OrderItem>();
+            foreach (var item in orderItems)
+            {
+                _orderItems.Add(item);
+                TotalPrice += item.Price * item.Quantity;
+            }
 
-            AddDomainEvent(new OrderPlacedDomainEvent(id, customerId, customerName, TotalPrice.Amount, TotalPrice.Currency, shippingAddress));
+            AddDomainEvent(new OrderPlacedDomainEvent(this.Id, customerId, customerName, TotalPrice, address));
         }
 
         public void CalculateOrderTotalPrice()
         {
-            if (_orderItems == null || !_orderItems.Any())
-            {
-                TotalPrice = new Price();
-                throw new Exception("Order has no items to calculate total price.");
-            }
-
-            var currency = _orderItems.First().Price.Currency;
-            decimal totalAmount = 0;
-
+            TotalPrice = 0;
             foreach (var item in _orderItems)
             {
-                if (item.Price.Currency != currency)
-                {
-                    throw new Exception("All order items must have the same currency.");
-                }
-                totalAmount += item.Price.Amount * item.Quantity;
+                TotalPrice += item.Price * item.Quantity;
             }
-
-            TotalPrice = new Price(currency, totalAmount);
         }
 
-        public void AddOrderItem(Guid productId, Price price, int quantity)
+        public void AddOrderItem(Guid productId, string productName, decimal price, int quantity)
         {
-            // make sure there's only 1 currency in an Order.
-            // might figure out a way to conver currency later.
-            var firstItemCurrency = _orderItems.FirstOrDefault()?.Price.Currency;
-
-            if (firstItemCurrency is not null && price.Currency != firstItemCurrency)
-            {
-                throw new Exception($"Order item must have {firstItemCurrency} as currency");
-            }
-
             var existingProduct = _orderItems.FirstOrDefault(o => o.Id == productId);
 
             if (existingProduct is not null)
@@ -71,7 +52,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
                 return;
             }
 
-            _orderItems.Add(new OrderItem(productId, price, quantity));
+            _orderItems.Add(new OrderItem(Guid.NewGuid(), this.Id, productId, productName, price, quantity));
             CalculateOrderTotalPrice();
         }
 
