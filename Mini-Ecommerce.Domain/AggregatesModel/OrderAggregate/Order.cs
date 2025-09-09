@@ -1,5 +1,4 @@
-﻿using Mini_Ecommerce.Domain.AggregatesModel.ValueObjects;
-using Mini_Ecommerce.Domain.Events;
+﻿using Mini_Ecommerce.Domain.Events;
 using Mini_Ecommerce.Domain.SeedWork;
 
 namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
@@ -13,22 +12,8 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
         public decimal TotalPrice { get; private set; }
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
 
-        protected Order()
+        internal Order()
         {
-        }
-
-        public Order(Guid id, Guid customerId, OrderStatus status, List<OrderItem> orderItems)
-        {
-            Id = id;
-            CustomerId = customerId;
-            OrderDate = DateTime.UtcNow;
-            Status = status;
-            _orderItems = new List<OrderItem>();
-            foreach (var item in orderItems)
-            {
-                _orderItems.Add(item);
-                TotalPrice += item.Price * item.Quantity;
-            }
         }
 
         public Order(Guid id, Guid customerId, string customerName, OrderStatus status, List<OrderItem> orderItems)
@@ -45,6 +30,29 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
             }
 
             AddDomainEvent(new OrderPlacedDomainEvent(this.Id, customerId, customerName, TotalPrice));
+        }
+
+        public Order(Guid id, Guid customerId, OrderStatus status, List<OrderItem> orderItems)
+        {
+            Id = id;
+            CustomerId = customerId;
+            OrderDate = DateTime.UtcNow;
+            Status = status;
+            _orderItems = new List<OrderItem>();
+            foreach (var item in orderItems)
+            {
+                _orderItems.Add(item);
+                TotalPrice += item.Price * item.Quantity;
+            }
+        }
+
+        public Order Update(Order order)
+        {
+            Status = order.Status;
+            _orderItems.Clear();
+            _orderItems.AddRange(order.OrderItems);
+
+            return this;
         }
 
         public void CalculateOrderTotalPrice()

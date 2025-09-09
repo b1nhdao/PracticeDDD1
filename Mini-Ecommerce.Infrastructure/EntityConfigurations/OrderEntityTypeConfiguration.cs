@@ -17,13 +17,7 @@ namespace Mini_Ecommerce.Infrastructure.EntityConfigurations
 
             builder.HasOne<Customer>()
                 .WithMany()
-                .HasForeignKey(o => o.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne<Order>()
-                          .WithMany()
-                          .HasForeignKey(oi => oi.OrderItems)
-                          .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(o => o.CustomerId);
 
             builder.Property(o => o.CustomerId).HasColumnName("customer_id").IsRequired();
             builder.Property(o => o.OrderDate).HasColumnName("order_date").IsRequired();

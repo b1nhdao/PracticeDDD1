@@ -33,21 +33,30 @@ namespace Mini_Ecommerce.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOrder(UpdateOrderCommand request)
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateOrder(Guid id, UpdateOrderCommand request)
         {
+            if(id == Guid.Empty)
+            {
+                return BadRequest(new {message = "invalid order Id"});
+            }
+
+            request.Id = id;
+
             return Ok(await _mediator.Send(request));
         }
 
-        [HttpPut("{orderId}/mark-as-paid")]
-        public async Task<IActionResult> MarkOrderAsPaid(Guid orderId, CancellationToken cancellationToken = default)
+        [HttpPut]
+        [Route("{id}/mark-as-paid")]
+        public async Task<IActionResult> MarkOrderAsPaid(Guid id, CancellationToken cancellationToken = default)
         {
 
-            if (orderId == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return BadRequest(new { message = "Invalid order ID" });
             }
 
-            var command = new MarkOrderAsPaidCommand(orderId);
+            var command = new MarkOrderAsPaidCommand(id);
             return await _mediator.Send(command, cancellationToken) ? Ok() : BadRequest();
         }
 
