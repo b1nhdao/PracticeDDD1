@@ -3,7 +3,7 @@ using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
 
 namespace Mini_Ecommerce.Api.Application.Commands
 {
-    public class MarkOrderAsPaidCommandHandler : IRequestHandler<MarkOrderAsPaidCommand, MarkOrderAsPaidResult>
+    public class MarkOrderAsPaidCommandHandler : IRequestHandler<MarkOrderAsPaidCommand, bool>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly ILogger<MarkOrderAsPaidCommandHandler> _logger;
@@ -16,7 +16,7 @@ namespace Mini_Ecommerce.Api.Application.Commands
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<MarkOrderAsPaidResult> Handle(MarkOrderAsPaidCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(MarkOrderAsPaidCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Processing MarkOrderAsPaid command for Order ID: {request.OrderId}");
 
@@ -26,7 +26,7 @@ namespace Mini_Ecommerce.Api.Application.Commands
                 if (request.OrderId == Guid.Empty)
                 {
                     _logger.LogWarning("Invalid Order ID provided");
-                    return MarkOrderAsPaidResult.CreateFailure("Invalid Order ID");
+                    return false;
                 }
 
                 // 2. Get the order
@@ -34,7 +34,7 @@ namespace Mini_Ecommerce.Api.Application.Commands
                 if (order == null)
                 {
                     _logger.LogWarning($"Order with ID {request.OrderId} not found");
-                    return MarkOrderAsPaidResult.CreateFailure($"Order with ID {request.OrderId} not found");
+                    return false;
                 }
 
                 order.SetPaidStatus();
@@ -46,16 +46,16 @@ namespace Mini_Ecommerce.Api.Application.Commands
                 if (!saveResult)
                 {
                     _logger.LogError($"Failed to save order {request.OrderId} as paid");
-                    return MarkOrderAsPaidResult.CreateFailure("Failed to save order changes");
+                    return false;
                 }
 
                 _logger.LogInformation($"Successfully marked order {request.OrderId} as paid");
-                return MarkOrderAsPaidResult.CreateSuccess(request.OrderId);
+                return true;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error processing MarkOrderAsPaid command for Order ID: {request.OrderId}");
-                return MarkOrderAsPaidResult.CreateFailure($"An error occurred while processing the request: {ex.Message}");
+                return false;
             }
         }
     }

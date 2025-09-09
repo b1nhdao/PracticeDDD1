@@ -38,56 +38,20 @@ namespace Mini_Ecommerce.Api.Controllers
 
                 // Create and send the command
                 var command = new MarkOrderAsPaidCommand(orderId);
-                var result = await _mediator.Send(command, cancellationToken);
+                var success = await _mediator.Send(command, cancellationToken);
 
                 // Return appropriate response based on result
-                if (result.Success)
+                if (success)
                 {
-                    return Ok(new
-                    {
-                        success = result.Success,
-                        message = result.Message,
-                        orderId = result.OrderId
-                    });
-                }
-                else
-                {
-
-                    // Return appropriate HTTP status based on the error message
-                    if (result.Message.Contains("not found"))
-                    {
-                        return NotFound(new
-                        {
-                            success = result.Success,
-                            message = result.Message
-                        });
-                    }
-                    else if (result.Message.Contains("cancelled") || result.Message.Contains("already"))
-                    {
-                        return BadRequest(new
-                        {
-                            success = result.Success,
-                            message = result.Message
-                        });
-                    }
-                    else
-                    {
-                        return StatusCode(500, new
-                        {
-                            success = result.Success,
-                            message = result.Message
-                        });
-                    }
+                    return Ok();
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "An unexpected error occurred while processing the request"
-                });
+                return BadRequest(ex);
             }
+
+            return Ok();
         }
     }
 }
