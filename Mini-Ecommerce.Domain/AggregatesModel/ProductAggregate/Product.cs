@@ -31,6 +31,26 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
             return product;
         }
 
+        public void DecreaseQuantity(int quantity)
+        {
+            if(quantity > Quantity)
+            {
+                throw new Exception("not enough supply");
+            }
+
+            if(quantity < 0)
+            {
+                throw new Exception("invalid quantity");
+            }
+
+            Quantity -= quantity;
+        }
+
+        public bool HasSufficientStock(int requestedQuantity)
+        {
+            return Quantity >= requestedQuantity;
+        }
+
         public void ToggleProductActive()
         {
             IsActive = !IsActive;

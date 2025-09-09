@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Mini_Ecommerce.Api.Servuces.EmailService;
 using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
 using Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate;
 using Mini_Ecommerce.Infrastructure;
@@ -25,6 +27,7 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

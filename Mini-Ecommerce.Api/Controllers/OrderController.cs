@@ -17,34 +17,77 @@ namespace Mini_Ecommerce.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Test ()
-        {
-            Address address = new Address("street 1", "city 1", "state 1", "country 1", "zipcode 1");
-
-            Guid orderId = Guid.NewGuid();
-
-            Guid productId1 = Guid.Parse("9B2FF169-358F-42D6-9EED-B5944A670761");
-
-            Guid productId2 = Guid.Parse("12345678-358F-42D6-9EED-B5944A670761");
-
-
-            List<OrderItem> orderItems = new List<OrderItem>
-            {
-                new OrderItem(Guid.NewGuid(), orderId, productId1, "product 1", 200, 200),
-                new OrderItem(Guid.NewGuid(), orderId,  productId2, "product 2", 300, 400),
-
-            };
-
-            Order order = new Order(orderId, Guid.Parse("9B2FF169-358F-42D6-9EED-B5944A670761"), "Binh", OrderStatus.Submitted, address, orderItems); ;
-            return Ok(order);
-        }
-
         [HttpPost]
         public async Task<IActionResult> AddOrder([FromBody]AddOrderCommand request)
         {
             var result = await _mediator.Send(request);
             return Ok(result);
+        }
+
+        [HttpPut("{orderId}/mark-as-paid")]
+        public async Task<IActionResult> MarkOrderAsPaid(Guid orderId, CancellationToken cancellationToken = default)
+        {
+
+            try
+            {
+                // Validate the order ID
+                if (orderId == Guid.Empty)
+                {
+                    return BadRequest(new { message = "Invalid order ID" });
+                }
+
+                // Create and send the command
+                var command = new MarkOrderAsPaidCommand(orderId);
+                var result = await _mediator.Send(command, cancellationToken);
+
+                // Return appropriate response based on result
+                if (result.Success)
+                {
+                    return Ok(new
+                    {
+                        success = result.Success,
+                        message = result.Message,
+                        orderId = result.OrderId
+                    });
+                }
+                else
+                {
+
+                    // Return appropriate HTTP status based on the error message
+                    if (result.Message.Contains("not found"))
+                    {
+                        return NotFound(new
+                        {
+                            success = result.Success,
+                            message = result.Message
+                        });
+                    }
+                    else if (result.Message.Contains("cancelled") || result.Message.Contains("already"))
+                    {
+                        return BadRequest(new
+                        {
+                            success = result.Success,
+                            message = result.Message
+                        });
+                    }
+                    else
+                    {
+                        return StatusCode(500, new
+                        {
+                            success = result.Success,
+                            message = result.Message
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An unexpected error occurred while processing the request"
+                });
+            }
         }
     }
 }
