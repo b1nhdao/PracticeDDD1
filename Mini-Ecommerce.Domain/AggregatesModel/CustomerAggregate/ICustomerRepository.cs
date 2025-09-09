@@ -6,6 +6,6 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.CustomerAggregate
     {
         Customer Add (Customer customer);
         Task<List<Customer>> GetAllAsync ();
-        Task<Customer> GetByIdAsync (Guid id);
+        Task<Customer?> GetByIdAsync (Guid id);
     }
 }

@@ -13,13 +13,12 @@ namespace Mini_Ecommerce.Domain.Events
         public decimal TotalAmount { get; }
         public Address ShippingAddress { get; }
 
-        public OrderPlacedDomainEvent(Guid orderId, Guid customerId, string customerName, decimal totalAmount, Address shippingAddress)
+        public OrderPlacedDomainEvent(Guid orderId, Guid customerId, string customerName, decimal totalAmount)
         {
             OrderId = orderId;
             CustomerId = customerId;
             CustomerName = customerName;
             TotalAmount = totalAmount;
-            ShippingAddress = shippingAddress;
         }
     }
 }

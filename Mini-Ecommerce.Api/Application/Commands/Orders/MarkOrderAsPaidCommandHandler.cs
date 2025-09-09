@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
 
-namespace Mini_Ecommerce.Api.Application.Commands
+namespace Mini_Ecommerce.Api.Application.Commands.Orders
 {
     public class MarkOrderAsPaidCommandHandler : IRequestHandler<MarkOrderAsPaidCommand, bool>
     {

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate;
 
-namespace Mini_Ecommerce.Api.Application.Commands
+namespace Mini_Ecommerce.Api.Application.Commands.Products
 {
     public class AddProductCommandHandler : IRequestHandler<AddProductCommand, Product>
     {

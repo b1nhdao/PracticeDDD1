@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
-using Mini_Ecommerce.Domain.AggregatesModel.ValueObjects;
 
-namespace Mini_Ecommerce.Api.Application.Commands
+namespace Mini_Ecommerce.Api.Application.Commands.Orders
 {
     public class AddOrderCommand : IRequest<Order>
     {
@@ -10,20 +9,15 @@ namespace Mini_Ecommerce.Api.Application.Commands
         public string CustomerName { get; set; }
         public DateTime OrderDate { get; set; }
         public OrderStatus Status { get; set; }
-        public Address Address { get; set; }
-        public string Currency { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public List<CreateOrderItemDto> OrderItems { get; set; } = new();
 
-        public AddOrderCommand(Guid customerId, string customerName, DateTime orderDate, OrderStatus status, Address address, string currency, decimal price, List<CreateOrderItemDto> orderItems)
+        public AddOrderCommand(Guid customerId, OrderStatus status, List<CreateOrderItemDto> orderItems)
         {
             CustomerId = customerId;
-            CustomerName = customerName;
-            OrderDate = orderDate;
+            OrderDate = DateTime.Now;
             Status = status;
-            Address = address;
-            Currency = currency;
-            Price = price;
+            Price = 0;
             OrderItems = orderItems;
         }
 
@@ -31,7 +25,6 @@ namespace Mini_Ecommerce.Api.Application.Commands
         {
             public Guid ProductId { get; set; }
             public string ProductName { get; set; } = string.Empty;
-            public string Currency { get; set; } = string.Empty;
             public decimal Price { get; set; }
             public int Quantity { get; set; }
         }

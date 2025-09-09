@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Mini_Ecommerce.Api.Servuces.EmailService;
+using Mini_Ecommerce.Domain.AggregatesModel.CustomerAggregate;
 using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
 using Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate;
 using Mini_Ecommerce.Infrastructure;
@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql("Host=localhost;Username=postgres;Password=123456;Database=practiceDDD;Port=5432;");
+    options.UseNpgsql("Host=localhost;Username=postgres;Password=dragonfly1122;Database=practiceDDD;Port=5432;");
 });
 
 builder.Services.AddMediatR(cfg =>
@@ -27,6 +27,9 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
+
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Mini_Ecommerce.Api.Application.Commands;
-using Mini_Ecommerce.Api.Application.Querries;
+using Mini_Ecommerce.Api.Application.Commands.Products;
+using Mini_Ecommerce.Api.Application.Querries.Products;
 
 namespace Mini_Ecommerce.Api.Controllers
 {

@@ -17,7 +17,21 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
         {
         }
 
-        public Order(Guid id, Guid customerId, string customerName, OrderStatus status, Address address, List<OrderItem> orderItems)
+        public Order(Guid id, Guid customerId, OrderStatus status, List<OrderItem> orderItems)
+        {
+            Id = id;
+            CustomerId = customerId;
+            OrderDate = DateTime.UtcNow;
+            Status = status;
+            _orderItems = new List<OrderItem>();
+            foreach (var item in orderItems)
+            {
+                _orderItems.Add(item);
+                TotalPrice += item.Price * item.Quantity;
+            }
+        }
+
+        public Order(Guid id, Guid customerId, string customerName, OrderStatus status, List<OrderItem> orderItems)
         {
             Id = id;
             CustomerId = customerId;
@@ -30,7 +44,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
                 TotalPrice += item.Price * item.Quantity;
             }
 
-            AddDomainEvent(new OrderPlacedDomainEvent(this.Id, customerId, customerName, TotalPrice, address));
+            AddDomainEvent(new OrderPlacedDomainEvent(this.Id, customerId, customerName, TotalPrice));
         }
 
         public void CalculateOrderTotalPrice()

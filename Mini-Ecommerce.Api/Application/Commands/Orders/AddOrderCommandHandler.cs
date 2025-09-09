@@ -2,7 +2,7 @@
 using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
 using Mini_Ecommerce.Infrastructure.Repositories;
 
-namespace Mini_Ecommerce.Api.Application.Commands
+namespace Mini_Ecommerce.Api.Application.Commands.Orders
 {
     public class AddOrderCommandHandler : IRequestHandler<AddOrderCommand, Order>
     {
@@ -20,7 +20,6 @@ namespace Mini_Ecommerce.Api.Application.Commands
                             request.CustomerId,
                             request.CustomerName,
                             request.Status,
-                            request.Address,
                             new List<OrderItem>()
                         );
 

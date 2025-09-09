@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Mini_Ecommerce.Api.Application.Commands
+namespace Mini_Ecommerce.Api.Application.Commands.Orders
 {
     public class MarkOrderAsPaidCommand : IRequest<bool>
     {
