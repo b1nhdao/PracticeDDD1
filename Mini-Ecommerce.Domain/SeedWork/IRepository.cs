@@ -1,6 +1,6 @@
 ﻿namespace Mini_Ecommerce.Domain.SeedWork
 {
-    public interface IRepository<T> where T : IAggregateRoot
+    public interface IRepository<T> where T : Entity, IAggregateRoot
     {
         IUnitOfWork UnitOfWork { get; }
 
@@ -9,5 +9,6 @@
         Task<T?> GetByIdAsync(Guid id);
         T Update(T entity);
         bool Delete(T entity);
+        Task<(List<T>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize, bool isDescending);
     }
 }

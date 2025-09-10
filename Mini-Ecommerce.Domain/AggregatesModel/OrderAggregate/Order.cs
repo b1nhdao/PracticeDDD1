@@ -5,7 +5,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
 {
     public class Order : Entity, IAggregateRoot
     {
-        private readonly List<OrderItem> _orderItems = new List<OrderItem>();
+        private readonly List<OrderItem> _orderItems = [];
         public Guid CustomerId { get; private set; }
         public DateTime OrderDate { get; private set; }
         public OrderStatus Status { get; private set; }
@@ -61,8 +61,20 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
             _orderItems.Clear();
             foreach (var item in orderItems)
             {
-                _orderItems.Add(item);
+                AddOrderItem(item);
             }
+        }
+
+        public void AddOrderItem(OrderItem orderItem)
+        {
+            var existingOrderItem = _orderItems.Find(o => o.ProductId == orderItem.ProductId);
+
+            if (existingOrderItem is not null)
+            {
+                _orderItems.Remove(existingOrderItem);
+                orderItem.IncreaseQuantity(orderItem.Quantity);
+            }
+            _orderItems.Add(orderItem);
         }
 
         public void SetStatus(OrderStatus status)

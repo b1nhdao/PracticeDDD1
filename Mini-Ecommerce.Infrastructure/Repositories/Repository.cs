@@ -3,7 +3,7 @@ using Mini_Ecommerce.Domain.SeedWork;
 
 namespace Mini_Ecommerce.Infrastructure.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class, IAggregateRoot
+    public class Repository<T> : IRepository<T> where T : Entity, IAggregateRoot
     {
         private readonly AppDbContext _context;
 
@@ -34,6 +34,19 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
         public async Task<T?> GetByIdAsync(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<(List<T>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize, bool isDescending)
+        {
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
+
+            if (isDescending)
+            {
+                query.OrderByDescending(e => e.Id);
+            }
+
+            var item = await query.Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
+            return (item, item.Count());
         }
 
         public T Update(T entity)

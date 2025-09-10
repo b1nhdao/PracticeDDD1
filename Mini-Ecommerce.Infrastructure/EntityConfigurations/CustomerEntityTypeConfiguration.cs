@@ -20,6 +20,7 @@ namespace Mini_Ecommerce.Infrastructure.EntityConfigurations
             builder.Property(c => c.Email)
                 .HasMaxLength(200);
 
+
             builder.OwnsOne(c => c.Address);
         }
     }

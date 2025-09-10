@@ -28,6 +28,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
         public void IncreaseQuantity(int quantity)
         {
             Quantity += quantity;
+            LineTotal = Price * Quantity;
         }
 
         public static OrderItem Add(Guid productId, Guid orderId, string productName, decimal price, int quantity)

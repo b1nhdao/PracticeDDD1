@@ -16,7 +16,7 @@ namespace Mini_Ecommerce.Api.Application.Querries.Orders
         public async Task<PagedResponse<Order>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
             var (items, totalCount) = await _orderRepository
-                .GetPagedAsync(request.Parameters.PageIndex, request.Parameters.PageSize);
+                .GetPagedAsync(request.Parameters.PageIndex, request.Parameters.PageSize, request.Parameters.IsDescending);
 
             return new PagedResponse<Order>(request.Parameters.PageIndex, request.Parameters.PageSize, totalCount, items);
         }

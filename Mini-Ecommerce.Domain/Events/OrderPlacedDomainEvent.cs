@@ -19,6 +19,6 @@ namespace Mini_Ecommerce.Domain.Events
             CustomerId = customerId;
             CustomerName = customerName;
             TotalAmount = totalAmount;
-        }
+        }   
     }
 }

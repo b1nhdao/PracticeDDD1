@@ -34,25 +34,35 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
             return order;
         }
 
-        public async Task<(List<Order>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize)
+        public async Task<(List<Order>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize, bool isDescending)
         {
-            var query = _context.Set<Order>()
-            .Include(o => o.OrderItems)
-            .AsQueryable();
+            if (pageIndex < 0) pageIndex = 0;
+            if (pageSize <= 0) pageSize = 10;
 
-            var totalCount = await query.CountAsync();
+            var baseQuery = _context.Set<Order>()
+                .AsNoTracking()
+                .Include(o => o.OrderItems);
+
+            var totalCount = await baseQuery.CountAsync();
+
+            IQueryable<Order> query;
+            if (isDescending)
+            {
+                query = baseQuery.OrderByDescending(o => o.OrderDate)
+                                 .ThenByDescending(o => o.Id);
+            }
+            else
+            {
+                query = baseQuery.OrderBy(o => o.OrderDate)
+                                 .ThenBy(o => o.Id);
+            }
 
             var items = await query
-                .Skip(pageIndex * pageSize)
+                .Skip(pageIndex * pageSize)   // 0-based
                 .Take(pageSize)
                 .ToListAsync();
 
             return (items, totalCount);
-        }
-
-        public void DeleteOrderItems(Order order)
-        {
-            _context.OrderItem.RemoveRange(order.OrderItems);
         }
 
         public Order Update(Order order)
@@ -62,9 +72,9 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
             return order;
         }
 
-        public void AddOrderItems(List<OrderItem> orderItems)
+        public Task<(List<Order>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize)
         {
-            _context.OrderItem.AddRange(orderItems);
+            throw new NotImplementedException();
         }
     }
 }
