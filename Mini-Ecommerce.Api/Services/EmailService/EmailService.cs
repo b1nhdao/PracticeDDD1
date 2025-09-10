@@ -11,9 +11,14 @@ namespace Mini_Ecommerce.Api.Servuces.EmailService
             _logger = logger;
         }
 
+        public void SendEmail(Customer customer, CancellationToken cancellationToken = default)
+        {
+            _logger.LogError("EMAIL SERVICE: EMAIL SENT TO {c}", customer.Id);
+        }
+
         public void SendEmailOrderPurchased(Customer customer, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation($"EMAIL SERVICE: EMAIL SENT TO {customer.Email}");
+            _logger.LogInformation("EMAIL SERVICE: EMAIL SENT TO {ce}. \nHELLO {cn}", customer.Id, customer.Name);
         }
     }
 }

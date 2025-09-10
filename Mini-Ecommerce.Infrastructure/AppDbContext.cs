@@ -17,7 +17,7 @@ namespace Mini_Ecommerce.Infrastructure
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<OrderItem> OrderItem { get; set; }
-        public DbSet<WishlistProducts> WishlistProducts { get; set; }
+        public DbSet<WishlistProduct> WishlistProducts { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -43,7 +43,7 @@ namespace Mini_Ecommerce.Infrastructure
             modelBuilder.ApplyConfiguration(new ProductEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new WishlistProductsConfiguration());
+            modelBuilder.ApplyConfiguration(new WishlistProductEntityConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

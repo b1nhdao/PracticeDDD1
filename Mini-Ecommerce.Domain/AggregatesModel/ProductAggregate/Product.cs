@@ -1,4 +1,5 @@
 ﻿using Mini_Ecommerce.Domain.AggregatesModel.ValueObjects;
+using Mini_Ecommerce.Domain.Events;
 using Mini_Ecommerce.Domain.SeedWork;
 
 namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
@@ -37,6 +38,17 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
         {
             var product = new Product(Guid.NewGuid(), name, description, sku, price, quantity);
             return product;
+        }
+
+        public void Restock(int quantity)
+        {
+            if(quantity < 0)
+            {
+                throw new Exception("Invalid quantity number to increase - must be greater than 0");
+            }
+            Quantity += quantity;
+
+            AddDomainEvent(new ProductRestockedDomainEvent(Id, quantity));
         }
 
         public void DecreaseQuantity(int quantity)

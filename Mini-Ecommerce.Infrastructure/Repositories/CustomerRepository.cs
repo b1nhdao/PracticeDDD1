@@ -1,4 +1,5 @@
-﻿using Mini_Ecommerce.Domain.AggregatesModel.CustomerAggregate;
+﻿using Microsoft.EntityFrameworkCore;
+using Mini_Ecommerce.Domain.AggregatesModel.CustomerAggregate;
 using Mini_Ecommerce.Domain.SeedWork;
 
 namespace Mini_Ecommerce.Infrastructure.Repositories
@@ -13,5 +14,19 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
         }
 
         public IUnitOfWork UnitOfWork => _context;
+
+        public async Task<List<Customer>?> GetCustomersWishlishedProductAsync(Guid productId)
+        {
+            return await _context.Customers
+                .Where(c => c.WishlistProducts
+                .Any(w => w.ProductId == productId))
+                .ToListAsync();
+        }
+
+        public WishlistProduct AddWishlishProduct(WishlistProduct product)
+        {
+            _context.WishlistProducts.Add(product);
+            return product;
+        }
     }
 }

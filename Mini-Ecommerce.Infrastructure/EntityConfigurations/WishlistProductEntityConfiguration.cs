@@ -5,9 +5,9 @@ using Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate;
 
 namespace Mini_Ecommerce.Infrastructure.EntityConfigurations
 {
-    internal class WishlistProductsConfiguration : IEntityTypeConfiguration<WishlistProducts>
+    internal class WishlistProductEntityConfiguration : IEntityTypeConfiguration<WishlistProduct>
     {
-        public void Configure(EntityTypeBuilder<WishlistProducts> builder)
+        public void Configure(EntityTypeBuilder<WishlistProduct> builder)
         {
             builder.ToTable("wishlish_products");
 

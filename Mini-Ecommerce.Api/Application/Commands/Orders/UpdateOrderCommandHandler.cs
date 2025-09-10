@@ -33,9 +33,11 @@ namespace Mini_Ecommerce.Api.Application.Commands.Orders
                         item.Quantity))
                     .ToList();
 
-            orderExisting.SetStatus(request.OrderDto.Status);
-            orderExisting.SetOrderItems(newOrderItems);
-            orderExisting.CalculateOrderTotalPrice();
+            //orderExisting.SetStatus(request.OrderDto.Status);
+            //orderExisting.SetOrderItems(newOrderItems);
+            //orderExisting.CalculateOrderTotalPrice();
+
+            orderExisting.Update(request.OrderDto.Status, newOrderItems);
 
             var order = _orderRepository.Update(orderExisting);
             await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);

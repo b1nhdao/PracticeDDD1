@@ -55,5 +55,14 @@ namespace Mini_Ecommerce.Api.Controllers
             GetProductByIdQuery query = new GetProductByIdQuery(id);
             return Ok(await _mediator.Send(query));
         }
+
+        [HttpGet]
+        [Route("{id}/Stock")]
+        public async Task<IActionResult> Stock(Guid id, int quantity)
+        {
+            StockProductCommand command = new StockProductCommand(id, quantity);
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
     }
 }

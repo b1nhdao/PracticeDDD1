@@ -46,14 +46,12 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
             }
         }
 
-        public void Update(Order order)
+        public void Update(OrderStatus orderStatus, List<OrderItem> orderItems)
         {
-            Status = order.Status;
+            Status = orderStatus;
             _orderItems.Clear();
-            foreach (var item in order.OrderItems)
-            {
-                _orderItems.Add(item);
-            }
+            _orderItems.AddRange(orderItems);
+            CalculateOrderTotalPrice();
         }
 
         public void SetOrderItems(List<OrderItem> orderItems)
