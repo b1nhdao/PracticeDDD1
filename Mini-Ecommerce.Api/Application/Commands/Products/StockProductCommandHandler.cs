@@ -22,7 +22,7 @@ namespace Mini_Ecommerce.Api.Application.Commands.Products
 
             productExisting.Restock(request.Quantity);
             var result = _productRepository.Update(productExisting);
-            await _productRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+            await _productRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             return result;
         }

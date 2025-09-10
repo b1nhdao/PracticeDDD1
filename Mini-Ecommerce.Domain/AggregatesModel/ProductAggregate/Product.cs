@@ -1,5 +1,4 @@
-﻿using Mini_Ecommerce.Domain.AggregatesModel.ValueObjects;
-using Mini_Ecommerce.Domain.Events;
+﻿using Mini_Ecommerce.Domain.Events;
 using Mini_Ecommerce.Domain.SeedWork;
 
 namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
