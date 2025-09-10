@@ -25,6 +25,15 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public new Task<Order?> GetByIdAsync(Guid id)
+        {
+            var order = _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            return order;
+        }
+
         public async Task<(List<Order>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize)
         {
             var query = _context.Set<Order>()
@@ -39,6 +48,23 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
                 .ToListAsync();
 
             return (items, totalCount);
+        }
+
+        public void DeleteOrderItems(Order order)
+        {
+            _context.OrderItem.RemoveRange(order.OrderItems);
+        }
+
+        public Order Update(Order order)
+        {
+            _context.OrderItem.AddRange(order.OrderItems);
+            _context.Orders.Update(order);
+            return order;
+        }
+
+        public void AddOrderItems(List<OrderItem> orderItems)
+        {
+            _context.OrderItem.AddRange(orderItems);
         }
     }
 }

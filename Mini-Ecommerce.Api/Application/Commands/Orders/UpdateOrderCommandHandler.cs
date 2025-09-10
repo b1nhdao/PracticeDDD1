@@ -23,14 +23,19 @@ namespace Mini_Ecommerce.Api.Application.Commands.Orders
                 throw new Exception("order not found");
             }
 
+            var listOrderItem = new List<OrderItem>();
+            foreach (var item in request.OrderDto.OrderItems)
+            {
+                listOrderItem.Add(new OrderItem(Guid.NewGuid(), request.Id, item.ProductId, item.ProductName, item.Price, item.Quantity));
+            }
+
             orderExisting.SetStatus(request.OrderDto.Status);
+            orderExisting.SetOrderItems(listOrderItem);
 
-            orderExisting.Update(orderExisting);
-
+            _orderRepository.DeleteOrderItems(orderExisting);
+            
             var order = _orderRepository.Update(orderExisting);
             await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
-            _logger.LogError("done update ");
 
             return orderExisting;
         }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Mini_Ecommerce.Api.Application.Commands.Orders;
 using Mini_Ecommerce.Api.Application.Querries.Orders;
+using Mini_Ecommerce.Api.DTOs;
 using Mini_Ecommerce.Api.Models.Pagination;
 
 namespace Mini_Ecommerce.Api.Controllers
@@ -41,16 +42,16 @@ namespace Mini_Ecommerce.Api.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> UpdateOrder(Guid id, UpdateOrderCommand request)
+        public async Task<IActionResult> UpdateOrder(Guid id, UpdateOrderDto updateOrderDto)
         {
             if(id == Guid.Empty)
             {
                 return BadRequest(new {message = "invalid order Id"});
             }
 
-            request.Id = id;
+            var command = new UpdateOrderCommand(updateOrderDto, id);
 
-            return Ok(await _mediator.Send(request));
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpPut]
