@@ -18,19 +18,21 @@ namespace Mini_Ecommerce.Api.Application.Commands.Orders
         {
             var orderExisting = await _orderRepository.GetByIdAsync(request.Id);
 
-            if(orderExisting is null)
+            if (orderExisting is null)
             {
                 throw new Exception("order not found");
             }
 
-            orderExisting.Update(request.Order);
+            orderExisting.SetStatus(request.OrderDto.Status);
+
+            orderExisting.Update(orderExisting);
 
             var order = _orderRepository.Update(orderExisting);
-            await _orderRepository.UnitOfWork.SaveChangesAsync();
+            await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogError("done update ");
 
-            return order;
+            return orderExisting;
         }
     }
 }

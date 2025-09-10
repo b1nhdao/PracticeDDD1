@@ -5,7 +5,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
 {
     public class Order : Entity, IAggregateRoot
     {
-        private readonly List<OrderItem> _orderItems;
+        private readonly List<OrderItem> _orderItems = new List<OrderItem>();
         public Guid CustomerId { get; private set; }
         public DateTime OrderDate { get; private set; }
         public OrderStatus Status { get; private set; }
@@ -46,13 +46,14 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
             }
         }
 
-        public Order Update(Order order)
+        public void Update(Order order)
         {
             Status = order.Status;
-            _orderItems.Clear();
-            _orderItems.AddRange(order.OrderItems);
+        }
 
-            return this;
+        public void SetStatus(OrderStatus status)
+        {
+            Status = status;
         }
 
         public void CalculateOrderTotalPrice()

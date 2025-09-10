@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Mini_Ecommerce.Api.Application.Commands.Products;
 using Mini_Ecommerce.Api.Application.Querries.Products;
+using Mini_Ecommerce.Api.DTOs;
+using Mini_Ecommerce.Api.Models.Pagination;
 
 namespace Mini_Ecommerce.Api.Controllers
 {
@@ -17,15 +19,41 @@ namespace Mini_Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProductsPaged([FromQuery] PagedRequested request)
         {
-            return Ok(await _mediator.Send(new GetAllProductsQuery()));
+            var query = new GetAllProductsQuery(request);
+
+            return Ok(await _mediator.Send(query));
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, UpdateProductDto updateProductDto)
+        {
+            var command = new UpdateProductCommand(id, updateProductDto);
+            return Ok(await _mediator.Send(command));
         }
 
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] AddProductCommand request)
         {
             return Ok(await _mediator.Send(request));
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            var command = new DeleteProductCommand(id);
+            return Ok(await _mediator.Send(command));
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            GetProductByIdQuery query = new GetProductByIdQuery(id);
+            return Ok(await _mediator.Send(query));
         }
     }
 }

@@ -25,6 +25,14 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
             Quantity = quantity;
         }
 
+        public void Update(string name, string description, decimal price, int quantity)
+        {
+            Name = name;
+            Description = description;
+            Price = price;
+            Quantity = quantity;
+        }
+
         public static Product Add(string name, string description, Sku sku, decimal price, int quantity)
         {
             var product = new Product(Guid.NewGuid(), name, description, sku, price, quantity);

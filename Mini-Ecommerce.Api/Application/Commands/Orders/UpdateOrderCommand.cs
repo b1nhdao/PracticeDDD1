@@ -1,18 +1,18 @@
 ﻿using MediatR;
+using Mini_Ecommerce.Api.DTOs;
 using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
 
 namespace Mini_Ecommerce.Api.Application.Commands.Orders
 {
     public class UpdateOrderCommand : IRequest<Order>
     {
-        public Order Order { get; set; }
+        public UpdateOrderDto OrderDto { get; set; }
         public Guid Id { get; set; }
 
-        public UpdateOrderCommand(Order order, Guid id)
+        public UpdateOrderCommand(UpdateOrderDto orderDto, Guid id)
         {
-            Order = order;
+            OrderDto = orderDto;
             Id = id;
         }
     }
-
 }

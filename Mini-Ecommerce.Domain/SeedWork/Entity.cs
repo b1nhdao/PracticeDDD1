@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 public abstract class Entity
 {
     int? _requestedHashCode;
@@ -16,6 +17,7 @@ public abstract class Entity
         }
     }
 
+    [JsonIgnore]
     public List<INotification> DomainEvents => _domainEvents;
     public void AddDomainEvent(INotification eventItem)
     {

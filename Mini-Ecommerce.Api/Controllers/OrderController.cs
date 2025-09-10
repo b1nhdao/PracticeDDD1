@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Mini_Ecommerce.Api.Application.Commands;
 using Mini_Ecommerce.Api.Application.Commands.Orders;
-using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
-using Mini_Ecommerce.Domain.AggregatesModel.ValueObjects;
+using Mini_Ecommerce.Api.Application.Querries.Orders;
+using Mini_Ecommerce.Api.Models.Pagination;
 
 namespace Mini_Ecommerce.Api.Controllers
 {
@@ -16,6 +15,14 @@ namespace Mini_Ecommerce.Api.Controllers
         public OrderController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetOrdersPaged([FromQuery]PagedRequested request)
+        {
+            var query = new GetOrdersQuery(request);
+
+            return Ok(await _mediator.Send(query));
         }
 
         [HttpPost]
@@ -60,5 +67,12 @@ namespace Mini_Ecommerce.Api.Controllers
             return await _mediator.Send(command, cancellationToken) ? Ok() : BadRequest();
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetById (Guid id)
+        {
+            var query = new GetOrderByIdQuery(id);
+            return Ok(await _mediator.Send(query));
+        }
     }
 }

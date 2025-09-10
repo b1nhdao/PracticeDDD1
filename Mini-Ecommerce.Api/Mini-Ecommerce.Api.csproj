@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\Commands\Customers\**" />
+    <Content Remove="Application\Commands\Customers\**" />
+    <EmbeddedResource Remove="Application\Commands\Customers\**" />
+    <None Remove="Application\Commands\Customers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,10 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mini-Ecommerce.Infrastructure\Mini-Ecommerce.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\Commands\Customers\" />
   </ItemGroup>
 
 </Project>

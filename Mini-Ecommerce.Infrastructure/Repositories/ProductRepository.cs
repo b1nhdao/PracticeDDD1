@@ -14,5 +14,20 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
         }
 
         public IUnitOfWork UnitOfWork => _context;
+
+        public async Task<(List<Product>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize)
+        {
+            var query = _context.Set<Product>().AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .AsNoTracking()
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
     }
 }
