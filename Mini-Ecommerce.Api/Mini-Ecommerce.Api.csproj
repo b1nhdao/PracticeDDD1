@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Mini-Ecommerce.Infrastructure\Mini-Ecommerce.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Querries\Customers\" />
-  </ItemGroup>
-
 </Project>

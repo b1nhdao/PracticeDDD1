@@ -36,9 +36,6 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
 
         public async Task<(List<Order>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize, bool isDescending)
         {
-            if (pageIndex < 0) pageIndex = 0;
-            if (pageSize <= 0) pageSize = 10;
-
             var baseQuery = _context.Set<Order>()
                 .AsNoTracking()
                 .Include(o => o.OrderItems);
@@ -58,7 +55,7 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
             }
 
             var items = await query
-                .Skip(pageIndex * pageSize)   // 0-based
+                .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 

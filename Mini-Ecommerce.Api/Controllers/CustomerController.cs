@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mini_Ecommerce.Api.Application.Commands.Customers;
+using Mini_Ecommerce.Api.Application.Querries.Customers;
+using Mini_Ecommerce.Api.Models.Pagination;
 
 namespace Mini_Ecommerce.Api.Controllers
 {
@@ -22,6 +24,14 @@ namespace Mini_Ecommerce.Api.Controllers
             var command = new CustomerAddWishlishProductCommand(customerId, ProductId);
             var result = await _mediator.Send(command);
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<IActionResult> GetProducts([FromQuery]PagedRequest request)
+        {
+            var query = new GetCustomersQuery(request);
+            return Ok(await _mediator.Send(query));
         }
     }
 }

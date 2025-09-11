@@ -6,9 +6,9 @@ namespace Mini_Ecommerce.Api.Application.Querries.Orders
 {
     public class GetOrdersQuery : IRequest<PagedResponse<Order>>
     {
-        public PagedRequested Parameters { get; set; }
+        public PagedRequest Parameters { get; set; }
 
-        public GetOrdersQuery(PagedRequested parameters)
+        public GetOrdersQuery(PagedRequest parameters)
         {
             Parameters = parameters;
         }

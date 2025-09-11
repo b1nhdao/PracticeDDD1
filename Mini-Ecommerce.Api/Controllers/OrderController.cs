@@ -19,7 +19,7 @@ namespace Mini_Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetOrdersPaged([FromQuery]PagedRequested request)
+        public async Task<IActionResult> GetOrdersPaged([FromQuery]PagedRequest request)
         {
             var query = new GetOrdersQuery(request);
 

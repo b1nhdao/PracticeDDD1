@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.AccessControl;
+using Microsoft.EntityFrameworkCore;
 using Mini_Ecommerce.Domain.AggregatesModel.CustomerAggregate;
 using Mini_Ecommerce.Domain.SeedWork;
 
@@ -21,6 +22,29 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
                 .Where(c => c.WishlistProducts
                 .Any(w => w.ProductId == productId))
                 .ToListAsync();
+        }
+
+        public async Task<(List<Customer>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize, bool isDescending)
+        {
+            var query = _context.Customers.AsNoTracking().Include(c => c.WishlistProducts).AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            if (isDescending)
+            {
+                query = query.OrderByDescending(c => c.Name);
+            }
+            else
+            {
+                query = query.OrderBy(c => c.Name);
+            }
+
+            var items = await query
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
         }
 
         public WishlistProduct AddWishlishProduct(WishlistProduct product)
