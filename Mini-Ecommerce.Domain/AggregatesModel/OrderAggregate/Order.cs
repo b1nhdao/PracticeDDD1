@@ -16,9 +16,8 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
         {
         }
 
-        public Order(Guid id, Guid customerId, string customerName, OrderStatus status, List<OrderItem> orderItems)
+        public Order(Guid customerId, string customerName, OrderStatus status, List<OrderItem> orderItems)
         {
-            Id = id;
             CustomerId = customerId;
             OrderDate = DateTime.UtcNow;
             Status = status;
@@ -32,24 +31,19 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
             AddDomainEvent(new OrderPlacedDomainEvent(this.Id, customerId, customerName, TotalPrice));
         }
 
-        public Order(Guid id, Guid customerId, OrderStatus status, List<OrderItem> orderItems)
+        public static Order AddOrder(Guid customerId, string customerName, OrderStatus status, List<OrderItem> orderItems)
         {
-            Id = id;
-            CustomerId = customerId;
-            OrderDate = DateTime.UtcNow;
-            Status = status;
-            _orderItems = new List<OrderItem>();
-            foreach (var item in orderItems)
-            {
-                _orderItems.Add(item);
-                TotalPrice += item.Price * item.Quantity;
-            }
+            var order = new Order(customerId, customerName, status, orderItems);
+            return order;
         }
 
         public void Update(OrderStatus orderStatus, List<OrderItem> orderItems)
         {
             Status = orderStatus;
-            _orderItems.Clear();
+
+            // chinh lai trong ef core 
+            // lay tracking het dong order items da co ra, neu notExist thi add moi vao.
+            //_orderItems.Clear();
             _orderItems.AddRange(orderItems);
             CalculateOrderTotalPrice();
         }
@@ -105,7 +99,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
 
         public void SetPaidStatus()
         {
-            if(Status != OrderStatus.Paid)
+            if (Status != OrderStatus.Paid)
             {
                 Status = OrderStatus.Paid;
 

@@ -23,24 +23,26 @@ namespace Mini_Ecommerce.Api.Application.Commands.Orders
                 throw new Exception("order not found");
             }
 
-            var newOrderItems = request.OrderDto.OrderItems
-                    .Select(item => new OrderItem(
-                        Guid.NewGuid(),
-                        request.Id,
-                        item.ProductId,
-                        item.ProductName,
-                        item.Price,
-                        item.Quantity))
-                    .ToList();
+            //var orderItems = orderExisting.OrderItems;
 
-            //orderExisting.SetStatus(request.OrderDto.Status);
-            //orderExisting.SetOrderItems(newOrderItems);
-            //orderExisting.CalculateOrderTotalPrice();
+            var orderItems = await _orderRepository.GetOrderItemsByOrderIdAsync(request.Id);
 
-            orderExisting.Update(request.OrderDto.Status, newOrderItems);
+            var newOrderItemsAdded = request.OrderDto.OrderItems
+                .Where(oi => !orderItems.Any(ei => ei.ProductId == oi.ProductId))
+                .Select(item => new OrderItem(
+                    Guid.NewGuid(),
+                    request.Id,
+                    item.ProductId,
+                    item.ProductName,
+                    item.Price,
+                    item.Quantity))
+                .ToList();
+
+            orderExisting.Update(request.OrderDto.Status, newOrderItemsAdded);
 
             var order = _orderRepository.Update(orderExisting);
-            await _orderRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             return order;
         }

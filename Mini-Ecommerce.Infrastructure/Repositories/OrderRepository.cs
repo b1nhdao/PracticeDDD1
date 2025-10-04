@@ -64,7 +64,31 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
 
         public Order Update(Order order)
         {
-            _context.OrderItem.AddRange(order.OrderItems);
+            var existingOrderitems = _context.OrderItem.Where(oi => oi.OrderId == order.Id).ToList();
+
+            var newOrderItemsAdded = order.OrderItems
+                .Where(oi => !existingOrderitems.Any(ei => ei.ProductId == oi.ProductId))
+                .Select(item => new OrderItem(
+                    Guid.NewGuid(),
+                    order.Id,
+                    item.ProductId,
+                    item.ProductName,
+                    item.Price,
+                    item.Quantity))
+                .ToList();
+            var addedEntities = _context.ChangeTracker.Entries();
+
+            foreach (var item in addedEntities)
+            {
+                if (item.State == EntityState.Modified)
+                {
+                    item.State = EntityState.Added;
+                }
+            }
+
+            _context.OrderItem.AddRange(newOrderItemsAdded);
+
+
             _context.Orders.Update(order);
             return order;
         }
@@ -72,6 +96,11 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
         public Task<(List<Order>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<List<OrderItem>> GetOrderItemsByOrderIdAsync(Guid id)
+        {
+            return _context.OrderItem.Where(oi => oi.OrderId == id).ToListAsync();
         }
     }
 }

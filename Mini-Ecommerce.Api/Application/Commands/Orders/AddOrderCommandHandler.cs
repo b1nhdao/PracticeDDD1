@@ -15,7 +15,6 @@ namespace Mini_Ecommerce.Api.Application.Commands.Orders
         public async Task<Order> Handle(AddOrderCommand request, CancellationToken cancellationToken)
         {
             var order = new Order(
-                            Guid.NewGuid(),
                             request.CustomerId,
                             request.CustomerName,
                             request.Status,

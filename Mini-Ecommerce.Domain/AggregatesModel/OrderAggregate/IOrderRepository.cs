@@ -7,5 +7,6 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate
         Task<(List<Order>, int TotalCount)> GetPagedAsync(int pageIndex, int pageSize);
         Task<List<Order>> GetOrdersByCustomerIdAsync(Guid customerId, int pageIndex, int pageSize);
         Task<Order> GetOrderByIdAsync(Guid id);
+        Task<List<OrderItem>> GetOrderItemsByOrderIdAsync(Guid id);
     }
 }
