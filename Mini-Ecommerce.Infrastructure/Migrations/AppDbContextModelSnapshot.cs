@@ -206,7 +206,7 @@ namespace Mini_Ecommerce.Infrastructure.Migrations
 
                             b1.HasKey("CustomerId");
 
-                            b1.ToTable("customers");
+                            b1.ToTable("customers", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("CustomerId");
@@ -268,7 +268,7 @@ namespace Mini_Ecommerce.Infrastructure.Migrations
 
                             b1.HasKey("ProductId");
 
-                            b1.ToTable("products");
+                            b1.ToTable("products", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductId");

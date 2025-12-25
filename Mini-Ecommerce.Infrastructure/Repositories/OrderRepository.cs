@@ -76,6 +76,8 @@ namespace Mini_Ecommerce.Infrastructure.Repositories
                     item.Price,
                     item.Quantity))
                 .ToList();
+
+
             var addedEntities = _context.ChangeTracker.Entries();
 
             foreach (var item in addedEntities)

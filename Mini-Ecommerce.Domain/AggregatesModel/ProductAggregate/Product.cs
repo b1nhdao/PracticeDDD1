@@ -41,7 +41,7 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
 
         public void Restock(int quantity)
         {
-            if(quantity < 0)
+            if (quantity < 0)
             {
                 throw new Exception("Invalid quantity number to increase - must be greater than 0");
             }
@@ -52,12 +52,12 @@ namespace Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate
 
         public void DecreaseQuantity(int quantity)
         {
-            if(quantity > Quantity)
+            if (quantity > Quantity)
             {
                 throw new Exception("not enough supply");
             }
 
-            if(quantity < 0)
+            if (quantity < 0)
             {
                 throw new Exception("invalid quantity");
             }

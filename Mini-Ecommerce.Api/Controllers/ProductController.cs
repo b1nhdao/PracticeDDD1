@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Mini_Ecommerce.Api.Application.Commands.Products;
 using Mini_Ecommerce.Api.Application.Querries.Products;
+using Mini_Ecommerce.Api.Attributes.RedisCache;
 using Mini_Ecommerce.Api.DTOs;
 using Mini_Ecommerce.Api.Models.Pagination;
 
@@ -19,6 +20,7 @@ namespace Mini_Ecommerce.Api.Controllers
         }
 
         [HttpGet]
+        [RedisCache(60, KeyPrefix = "product_list")]
         public async Task<IActionResult> GetAllProductsPaged([FromQuery] PagedRequest request)
         {
             var query = new GetAllProductsQuery(request);
@@ -49,6 +51,7 @@ namespace Mini_Ecommerce.Api.Controllers
         }
 
         [HttpGet]
+        [RedisCache()]
         [Route("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Mini_Ecommerce.Api.Attributes.RedisCache;
 using Mini_Ecommerce.Api.Models.Pagination;
 using Mini_Ecommerce.Domain.AggregatesModel.ProductAggregate;
 

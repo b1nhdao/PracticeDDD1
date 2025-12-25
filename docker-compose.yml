@@ -1,0 +1,6 @@
+services:
+  mini-ecommerce.api:
+    image: ${DOCKER_REGISTRY-}miniecommerceapi
+    build:
+      context: .
+      dockerfile: Mini-Ecommerce.Api/Dockerfile
