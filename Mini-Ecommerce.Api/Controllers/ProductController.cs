@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Diagnostics;
+using BenchmarkDotNet.Attributes;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mini_Ecommerce.Api.Application.Commands.Products;
 using Mini_Ecommerce.Api.Application.Querries.Products;
@@ -10,6 +12,7 @@ namespace Mini_Ecommerce.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [CacheRewriteActionFilter("Products")]
     public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,11 +23,10 @@ namespace Mini_Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        [RedisCache(60, KeyPrefix = "product_list")]
+        [RedisCache(1, KeyPrefix = "product_list")]
         public async Task<IActionResult> GetAllProductsPaged([FromQuery] PagedRequest request)
         {
             var query = new GetAllProductsQuery(request);
-
             return Ok(await _mediator.Send(query));
         }
 

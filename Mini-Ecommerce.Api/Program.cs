@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Mini_Ecommerce.Api.Attributes.RedisCache;
+using Mini_Ecommerce.Api.Services.CacheService;
 using Mini_Ecommerce.Api.Servuces.EmailService;
 using Mini_Ecommerce.Domain.AggregatesModel.CustomerAggregate;
 using Mini_Ecommerce.Domain.AggregatesModel.OrderAggregate;
@@ -34,9 +36,12 @@ builder.Services.AddStackExchangeRedisCache(options =>
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
-    var configuration = builder.Configuration["Redis:ConnectionString"];
+    var configuration = ConfigurationOptions.Parse(
+        builder.Configuration["Redis:ConnectionString"] ?? "redis:6379");
     return ConnectionMultiplexer.Connect(configuration);
 });
+
+builder.Services.AddSingleton<ICacheService, CacheService>();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();

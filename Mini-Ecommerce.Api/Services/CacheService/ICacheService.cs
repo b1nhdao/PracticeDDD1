@@ -2,8 +2,11 @@
 {
     public interface ICacheService
     {
-        Task<TItem> GetOrCreateAsync<TItem>(string cacheKey, Func<Task<TItem>> factory);
-        Task<IReadOnlyList<TItem>> GetOrCreateAsync<TItem>(string cacheKey, Func<Task<IReadOnlyList<TItem>>> factory);
-        Task RemoveAsync(params string[] cacheKeys);
+        Task<T?> GetAsync<T>(string key);
+        Task SetAsync<T>(string key, T value, TimeSpan? expiration = null);
+        Task RemoveAsync(string key);
+        Task<bool> ExistsAsync(string key);
+        Task<List<string>> GetAllKeys();
+        Task RemoveAllWithPrefix(string prefix);
     }
 }

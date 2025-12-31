@@ -1,5 +1,6 @@
 ﻿namespace Mini_Ecommerce.Api.Attributes.RedisCache
 {
+    [AttributeUsage(AttributeTargets.All)]
     public class RedisCacheAttribute : Attribute
     {
         public int DurationInSeconds { get; set; } = 300;

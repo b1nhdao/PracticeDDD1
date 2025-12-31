@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Mini_Ecommerce.Api.Attributes.RedisCache
 {
-    public class RedisCacheFilter : IAsyncActionFilter
+    public class RedisCacheFilter : Attribute, IAsyncActionFilter
     {
         private readonly IDistributedCache _cache;
         private readonly ILogger<RedisCacheFilter> _logger;
@@ -18,7 +18,6 @@ namespace Mini_Ecommerce.Api.Attributes.RedisCache
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            // Lấy attribute từ action
             var cacheAttribute = context.ActionDescriptor.EndpointMetadata
                 .OfType<RedisCacheAttribute>()
                 .FirstOrDefault();
@@ -29,17 +28,14 @@ namespace Mini_Ecommerce.Api.Attributes.RedisCache
                 return;
             }
 
-            // Tạo cache key từ route và parameters
             var cacheKey = GenerateCacheKey(context, cacheAttribute.KeyPrefix);
 
-            // Thử lấy dữ liệu từ cache
             var cachedData = await _cache.GetStringAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedData))
             {
                 _logger.LogInformation("Cache hit for key: {CacheKey}", cacheKey);
 
-                // Deserialize và trả về kết quả từ cache
                 var cachedResult = JsonSerializer.Deserialize<object>(cachedData);
                 context.Result = new OkObjectResult(cachedResult);
                 return;
@@ -47,10 +43,8 @@ namespace Mini_Ecommerce.Api.Attributes.RedisCache
 
             _logger.LogInformation("Cache miss for key: {CacheKey}", cacheKey);
 
-            // Thực thi action
             var executedContext = await next();
 
-            // Lưu kết quả vào cache nếu thành công
             if (executedContext.Result is OkObjectResult okResult && okResult.Value != null)
             {
                 var serializedData = JsonSerializer.Serialize(okResult.Value);
