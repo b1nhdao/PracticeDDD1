@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using BenchmarkDotNet.Attributes;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mini_Ecommerce.Api.Application.Commands.Products;
 using Mini_Ecommerce.Api.Application.Querries.Products;
@@ -12,7 +10,7 @@ namespace Mini_Ecommerce.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [CacheRewriteActionFilter("Products")]
+    [CacheRewrite("Products")]
     public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;

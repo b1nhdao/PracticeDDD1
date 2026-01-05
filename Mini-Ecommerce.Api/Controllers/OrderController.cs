@@ -2,13 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Mini_Ecommerce.Api.Application.Commands.Orders;
 using Mini_Ecommerce.Api.Application.Querries.Orders;
+using Mini_Ecommerce.Api.Attributes.RedisCache;
 using Mini_Ecommerce.Api.DTOs;
 using Mini_Ecommerce.Api.Models.Pagination;
+using System.Diagnostics;
 
 namespace Mini_Ecommerce.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [CacheRewrite("Orders", 10)]
     public class OrderController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,11 +22,13 @@ namespace Mini_Ecommerce.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetOrdersPaged([FromQuery]PagedRequest request)
+        public async Task<IActionResult> GetOrdersPaged([FromQuery] PagedRequest request)
         {
-            var query = new GetOrdersQuery(request);
 
-            return Ok(await _mediator.Send(query));
+            var query = new GetOrdersQuery(request);
+            var result = await _mediator.Send(query);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -44,9 +49,9 @@ namespace Mini_Ecommerce.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> UpdateOrder(Guid id, UpdateOrderDto updateOrderDto)
         {
-            if(id == Guid.Empty)
+            if (id == Guid.Empty)
             {
-                return BadRequest(new {message = "invalid order Id"});
+                return BadRequest(new { message = "invalid order Id" });
             }
 
             var command = new UpdateOrderCommand(updateOrderDto, id);
@@ -70,7 +75,7 @@ namespace Mini_Ecommerce.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetById (Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var query = new GetOrderByIdQuery(id);
             return Ok(await _mediator.Send(query));

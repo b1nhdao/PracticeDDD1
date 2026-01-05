@@ -8,5 +8,6 @@
         Task<bool> ExistsAsync(string key);
         Task<List<string>> GetAllKeys();
         Task RemoveAllWithPrefix(string prefix);
+        Task SlidingExpiration(string key, TimeSpan sliddingExpiration);
     }
 }

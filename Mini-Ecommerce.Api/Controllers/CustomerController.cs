@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Mini_Ecommerce.Api.Application.Commands.Customers;
 using Mini_Ecommerce.Api.Application.Querries.Customers;
+using Mini_Ecommerce.Api.Attributes.RedisCache;
 using Mini_Ecommerce.Api.Models.Pagination;
 
 namespace Mini_Ecommerce.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [CacheRewrite("Customer", 20)]
     public class CustomerController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -28,7 +30,7 @@ namespace Mini_Ecommerce.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetProducts([FromQuery]PagedRequest request)
+        public async Task<IActionResult> GetProducts([FromQuery] PagedRequest request)
         {
             var query = new GetCustomersQuery(request);
             return Ok(await _mediator.Send(query));

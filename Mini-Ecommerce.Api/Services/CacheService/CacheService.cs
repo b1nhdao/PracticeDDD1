@@ -1,7 +1,7 @@
 ﻿
+using StackExchange.Redis;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
-using StackExchange.Redis;
 
 namespace Mini_Ecommerce.Api.Services.CacheService
 {
@@ -66,6 +66,11 @@ namespace Mini_Ecommerce.Api.Services.CacheService
             {
                 await _db.KeyDeleteAsync(key);
             }
+        }
+
+        public async Task SlidingExpiration(string key, TimeSpan sliddingExpiration)
+        {
+            await _db.KeyExpireAsync(key, sliddingExpiration);
         }
     }
 }
